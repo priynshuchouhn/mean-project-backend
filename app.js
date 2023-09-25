@@ -2,11 +2,22 @@ const express = require('express');
 
 const app = express();
 
+app.use(express.urlencoded({extended:true}));
 app.use((req,res,next)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Header", "Origin, X-Requested-With, Content-Type, Accept");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT,  PATCH, OPTION");
     next();
+})
+
+app.post('/api/posts', (req,res,next)=>{
+    const post = req.body;
+console.log(post);
+res.status(200).json({
+    message : 'Post Added successfully',
+    data: post,
+    success: true
+   })
 })
 
 
