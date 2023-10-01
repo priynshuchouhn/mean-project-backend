@@ -1,10 +1,10 @@
-const express = require('express');
+// const express = require('express');
+import express  from "express";
 
 const app = express();
 
 app.use(express.json());
 app.use((req,res,next)=>{
-    console.log(req);
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT,  PATCH, OPTION");
@@ -35,4 +35,5 @@ app.get('/api/posts',(req,res,next)=>{
     success: true
    })
 })
-module.exports = app;
+// module.exports = app;
+export default app;
