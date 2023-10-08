@@ -1,8 +1,11 @@
 // const express = require('express');
 import express  from "express";
+import Post from "./models/post.js";
+
+
 
 const app = express();
-
+app.use(express.json);
 app.use(express.urlencoded({extended:true}));
 app.use((req,res,next)=>{
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -12,7 +15,10 @@ app.use((req,res,next)=>{
 })
 
 app.post('/api/posts',(req,res,next)=>{
-const post = req.body;
+const post = new Post({
+    title: req.body['title'],
+    content: req.body['content']
+});
 res.status(200).json({
     message : 'Post Added successfully',
     data: post,
