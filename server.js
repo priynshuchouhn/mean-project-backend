@@ -9,7 +9,7 @@ dotenv.config();
 mongoose.connect(process.env.MONGODB_URI).then(()=>{
     console.log('Connection to mongoDb is successful')
 }).catch(()=>{
-    console.lod("Something went wrong");
+    console.log("Something went wrong");
 })
 
 
@@ -52,6 +52,7 @@ const onListening = () => {
   const addr = server.address();
   const bind = typeof port === "string" ? "pipe " + port : "port " + port;
   debug("Listening on " + bind);
+  console.log("Listening on " + bind);
 };
 
 const port = normalizePort(process.env.PORT || 3000);

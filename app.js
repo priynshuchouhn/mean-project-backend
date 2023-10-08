@@ -1,43 +1,72 @@
-// const express = require('express');
-import express  from "express";
+import express from "express";
 import Post from "./models/post.js";
 
 
 
 const app = express();
-app.use(express.json);
-app.use(express.urlencoded({extended:true}));
-app.use((req,res,next)=>{
+app.use(express.json());
+app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT,  PATCH, OPTION");
     next();
 })
 
-app.post('/api/posts',(req,res,next)=>{
-const post = new Post({
-    title: req.body['title'],
-    content: req.body['content']
+app.post('/api/posts', (req, res, next) => {
+    const post = new Post({
+        title: req.body['title'],
+        content: req.body['content']
+    });
+    post.save().then((post) => {
+        res.status(200).json({
+            message: 'Post Added successfully',
+            data: post,
+            success: true
+        })
+    }).catch((e) => {
+        res.status(404).json({
+            message: 'Post Added Failed',
+            data: e,
+            success: false
+        })
+    });
+
+})
+
+
+app.get('/api/posts', (req, res, next) => {
+    Post.find().then((documents)=>{
+        res.status(200).json({
+            message: 'Post fetched successfully',
+            data: documents,
+            success: true
+        })
+    }).catch(()=>{
+        res.status(404).json({
+            message: 'Could not fetch Post',
+            data: [],
+            success: false
+        })
+    })
 });
-res.status(200).json({
-    message : 'Post Added successfully',
-    data: post,
-    success: true
-   })
+
+app.delete('/api/posts/:id', (req,res,next)=>{
+    Post.deleteOne({_id: req.params.id}).then(()=>{
+        res.status(200).json({
+            message: 'Post Deleted successfully',
+            data: [],
+            success: true
+        })
+    }).catch(()=>{
+        res.status(404).json({
+            message: 'Post Deletion Failed',
+            data: [],
+            success: false
+        })
+
+    })
+
 })
 
 
-app.get('/api/posts',(req,res,next)=>{
-    const posts = [
-        {id:1, title: 'First post', content:'Content of first post!'},
-        {id:2, title: 'second post', content:'Content of second post!'},
-        {id:3, title: 'Third post', content:'Content of third post!'},
-    ];
-   res.status(200).json({
-    message : 'Post fetched successfully',
-    data: posts,
-    success: true
-   })
-})
-// module.exports = app;
 export default app;
