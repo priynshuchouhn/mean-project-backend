@@ -2,9 +2,9 @@ import express from "express";
 import Post from "../models/post.js";
 
 
-const router = express.Router();
+const postRouter = express.Router();
 
-router.post('', (req, res, next) => {
+postRouter.post('', (req, res, next) => {
     const post = new Post({
         title: req.body['title'],
         content: req.body['content']
@@ -18,7 +18,7 @@ router.post('', (req, res, next) => {
     }).catch((e) => {
         res.status(404).json({
             message: 'Post Added Failed',
-            data: e,
+            data: req.body,
             success: false
         })
     });
@@ -26,7 +26,7 @@ router.post('', (req, res, next) => {
 })
 
 
-router.get('', (req, res, next) => {
+postRouter.get('', (req, res, next) => {
     Post.find().then((documents)=>{
         res.status(200).json({
             message: 'Post fetched successfully',
@@ -42,7 +42,7 @@ router.get('', (req, res, next) => {
     })
 });
 
-router.delete('/:id', (req,res,next)=>{
+postRouter.delete('/:id', (req,res,next)=>{
     Post.deleteOne({_id: req.params.id}).then(()=>{
         res.status(200).json({
             message: 'Post Deleted successfully',
@@ -60,4 +60,4 @@ router.delete('/:id', (req,res,next)=>{
 
 })
 
-export default router;
+export default postRouter;

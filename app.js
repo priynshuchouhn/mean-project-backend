@@ -1,5 +1,5 @@
 import express from "express";
-import router from "./routes/posts.js";
+import postRouter from "./routes/posts.js";
 
 
 
@@ -13,7 +13,7 @@ app.use((req, res, next) => {
     next();
 })
 
-app.use("/api/posts",router)
+app.use("/api/posts",postRouter)
 
 
 
