@@ -31,14 +31,12 @@ postRouter.post('/edit', (req, res, next) => {
         content: req.body['content']
     };
     Post.findOneAndUpdate({_id: id}, post).then((post) => {
-        console.log("hello")
         res.status(200).json({
             message: 'Post Updated successfully',
             data: post,
             success: true
         })
     }).catch((e) => {
-        console.log("world")
         res.status(404).json({
             message: 'Post Updation Failed',
             data: e,
