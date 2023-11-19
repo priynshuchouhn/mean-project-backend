@@ -1,10 +1,35 @@
 import express from "express";
 import Post from "../models/post.js";
+import multer from "multer";
 
 
 const postRouter = express.Router();
 
-postRouter.post('', (req, res, next) => {
+const MIME_TYPE_MAP = {
+    'image/png' :'png',
+    'image/jpeg' :'jpg',
+    'image/jpg' :'jpg'
+}
+
+const storage =  multer.diskStorage({
+    destination: (req,file,cb)=>{
+        const isValid = MIME_TYPE_MAP[file.mimetype];
+        let error = new Error("Invalid MIME TYPE");
+        if(isValid){
+            error = null;
+        }
+        cb(error, "uploads");
+    },
+    filename: (req,file,cb)=>{
+        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        const ext = MIME_TYPE_MAP[file.mimetype];
+        cb(null, fileName+"-"+Date.now()+"."+ext)
+    }
+
+})
+
+// Add New Post
+postRouter.post('', multer({storage:storage}).single("image"),(req, res, next) => {
     const post = new Post({
         title: req.body['title'],
         content: req.body['content']
@@ -24,16 +49,18 @@ postRouter.post('', (req, res, next) => {
     });
 
 })
+
+// Edit Post
 postRouter.post('/edit', (req, res, next) => {
     const id = req.body['_id']; 
     const post = {
         title: req.body['title'],
         content: req.body['content']
     };
-    Post.findOneAndUpdate({_id: id}, post).then((post) => {
+    Post.findOneAndUpdate({_id: id}, post).then((document) => {
         res.status(200).json({
             message: 'Post Updated successfully',
-            data: post,
+            data: document,
             success: true
         })
     }).catch((e) => {
@@ -46,22 +73,24 @@ postRouter.post('/edit', (req, res, next) => {
 
 })
 
-
+// Get All Post
 postRouter.get('', (req, res, next) => {
     Post.find().then((documents)=>{
         res.status(200).json({
-            message: 'Post fetched successfully',
+            message: 'All Posts fetched successfully',
             data: documents,
             success: true
         })
     }).catch(()=>{
         res.status(404).json({
-            message: 'Could not fetch Post',
+            message: 'Could not fetch Posts',
             data: [],
             success: false
         })
     })
 });
+
+// Get Post by ID
 postRouter.get('/id', (req, res, next) => {
     const { id } = req.query
     Post.findOne({_id: id}).then((document)=>{
@@ -79,6 +108,8 @@ postRouter.get('/id', (req, res, next) => {
     })
 });
 
+
+// Delete Post by Id
 postRouter.delete('/:id', (req,res,next)=>{
     Post.deleteOne({_id: req.params.id}).then(()=>{
         res.status(200).json({
