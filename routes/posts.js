@@ -24,6 +24,29 @@ postRouter.post('', (req, res, next) => {
     });
 
 })
+postRouter.post('/edit', (req, res, next) => {
+    const id = req.body['_id']; 
+    const post = {
+        title: req.body['title'],
+        content: req.body['content']
+    };
+    Post.findOneAndUpdate({_id: id}, post).then((post) => {
+        console.log("hello")
+        res.status(200).json({
+            message: 'Post Updated successfully',
+            data: post,
+            success: true
+        })
+    }).catch((e) => {
+        console.log("world")
+        res.status(404).json({
+            message: 'Post Updation Failed',
+            data: e,
+            success: false
+        })
+    });
+
+})
 
 
 postRouter.get('', (req, res, next) => {
@@ -31,6 +54,22 @@ postRouter.get('', (req, res, next) => {
         res.status(200).json({
             message: 'Post fetched successfully',
             data: documents,
+            success: true
+        })
+    }).catch(()=>{
+        res.status(404).json({
+            message: 'Could not fetch Post',
+            data: [],
+            success: false
+        })
+    })
+});
+postRouter.get('/id', (req, res, next) => {
+    const { id } = req.query
+    Post.findOne({_id: id}).then((document)=>{
+        res.status(200).json({
+            message: 'Post fetched successfully',
+            data: document,
             success: true
         })
     }).catch(()=>{
