@@ -56,7 +56,6 @@ postRouter.post('', multer({storage:storage}).single("image"),(req, res, next) =
 postRouter.post('/edit', multer({storage:storage}).single("image"), (req, res, next) => {
     let imagePath = req.body['image'];
     if(req.file){
-        console.log("here")
         const url = req.protocol +"://" + req.get('host');
         imagePath = url +"/uploads/" + req.file.filename
     }
@@ -66,7 +65,6 @@ postRouter.post('/edit', multer({storage:storage}).single("image"), (req, res, n
         content: req.body['content'],
         imagePath: imagePath
     };
-    console.log(id);
     Post.findOneAndUpdate({_id: id}, post).then((document) => {
         res.status(200).json({
             message: 'Post Updated successfully',
